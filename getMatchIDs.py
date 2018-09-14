@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 import csv
 import time
-
+import uniqueMatchIDs as umd
 
 # open match id csv file in write mode
 with open('match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
@@ -21,7 +21,7 @@ with open('match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
         print("Record", i, "added.")
         time.sleep(1.1)
 
-
+umd.uniqueMatchIDs()
 
 
         
