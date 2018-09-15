@@ -28,11 +28,14 @@ def uniqueMatchIDs():
         for i in uniqueIDs2:
             count2+=1
         print("No. of existing unique match IDs :", count2)
-        print("New total :",count+count2)
+        
 
     # after checking then we write to file
     with open("unique_match_id.csv", "a", newline='') as newfile:
         writer = csv.writer(newfile, delimiter=',')
+        count3 = 0
         for i in uniqueIDs:
             if i not in uniqueIDs2:
+                count3+=1
                 writer.writerow(i)
+    print("New total :",count3+count2)
