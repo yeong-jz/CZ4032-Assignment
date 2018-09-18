@@ -2,7 +2,7 @@ import json
 import re
 
 # purpose is to filter labelled and unlabelled player data
-with open('playerData.json', 'r') as file, open('finalPlayerData.json', 'w') as newfile:
+with open('playerData.json', 'r') as file, open('finalPlayerData.json', 'a') as newfile:
     count = 0
     errorCount = 0
     try:
