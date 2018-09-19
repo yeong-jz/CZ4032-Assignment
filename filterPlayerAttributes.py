@@ -1,6 +1,5 @@
 # purpose is to get each json object to only have the attributes desired
 
-import json
 # list of attributes we want :
 ## kda :kill+assists/deaths+1
 ## Networth/Gold_per_min: how effective you are at getting gold
@@ -22,16 +21,21 @@ import json
 ## "lane_efficiency_pct": 25,
 ## "rank_tier": 63,
 
-# read each player's num of kills, deaths and assists from json file
+
+import json
+# initialise a list of keys which comes from the attributes that we decided on previously
 attr_keys = ["kda", "gold_efficiency", "camps_stacked", "last_hits", "denies", "hero_damage", "hero_healing",
             "obs_placed", "sen_placed", "stuns", "tower_damage", "rune_pickups",
              "teamfight_participation", "xp_per_min", "win", "buyback_count", "lane_efficiency_pct", "rank_tier"]
 
+# open the files 
 with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w") as newfile:
     count = 0
     for i in file:
         playerData = json.loads(i)
+        # initialise a list of values to be paired with the keys we have initialised earlier
         attr_values = []
+        # get the values from each player's data 
         kda = (playerData["kills"] + playerData["assists"])/(playerData["deaths"] + 1)
         gold_efficiency = playerData["total_gold"]/playerData["gold_per_min"]
         camps_stacked = playerData["camps_stacked"]
@@ -47,25 +51,29 @@ with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w"
         teamfight_participation = playerData["teamfight_participation"]
         xp_per_min = playerData["xp_per_min"]
         win = playerData["win"]
+        # some records do not have these data keys in the record so we have to handle that
         try:
             buyback_count = playerData["buyback_count"]
         except KeyError:
             buyback_count = 0
-            continue
         try:
             lane_efficiency_pct = playerData["lane_efficiency_pct"]
         except KeyError:
             lane_efficiency_pct = 0
-            continue
         rank_tier = playerData["rank_tier"]
+        # add the values that we have gotten to the list of values initialised earlier
         attr_values.extend((kda, gold_efficiency, camps_stacked, last_hits, denies, hero_damage, hero_healing, obs_placed,
               sen_placed, stuns, tower_damage, rune_pickups, teamfight_participation, xp_per_min, win, buyback_count,
                            lane_efficiency_pct, rank_tier))
+        
+        # to eliminate the existence of null values, we replace them with a zero
         for index, data in enumerate(attr_values):
             if data is None:
                 attr_values[index] = 0
             else:
+                # standardising all values to a 2dp format
                 attr_values[index] = float("{0:.2f}".format(data))
+        # create the dictionary which is our json object to be written to the file
         attr_dict = dict(zip(attr_keys, attr_values))
         json.dump(attr_dict, newfile)
         newfile.write('\n')
