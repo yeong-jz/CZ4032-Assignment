@@ -16,17 +16,18 @@
 ## Teamfight_participation
 ## XP_per_min
 ## "win": 0,
-## "lose": 1,
 ## "buyback_count": 1,
 ## "lane_efficiency_pct": 25,
-## "rank_tier": 63,
-
+## "rank_tier": Tens place indicates rank, ones place indicates stars.
+## ranks : herald, guardian, crusader, archon, legend, ancient, divine, immortal
+## ranks have different grades from 1 to 5
+## eg archon 4 would be 44 in the rank tier
 
 import json
 # initialise a list of keys which comes from the attributes that we decided on previously
-attr_keys = ["kda", "gold_efficiency", "camps_stacked", "last_hits", "denies", "hero_damage", "hero_healing",
+attr_keys = ["kda", "gold_efficiency", "camps_stacked", "last_hits", "hero_damage", "hero_healing",
             "obs_placed", "sen_placed", "stuns", "tower_damage", "rune_pickups",
-             "teamfight_participation", "xp_per_min", "win", "buyback_count", "lane_efficiency_pct", "rank_tier"]
+             "teamfight_participation", "xp_per_min", "win", "rank_tier"]
 
 # open the files 
 with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w") as newfile:
@@ -40,7 +41,6 @@ with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w"
         gold_efficiency = playerData["total_gold"]/playerData["gold_per_min"]
         camps_stacked = playerData["camps_stacked"]
         last_hits = playerData["last_hits"]
-        denies = playerData["denies"]
         hero_damage = playerData["hero_damage"]
         hero_healing = playerData["hero_healing"]
         obs_placed = playerData["obs_placed"]
@@ -50,21 +50,10 @@ with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w"
         rune_pickups = playerData["rune_pickups"]
         teamfight_participation = playerData["teamfight_participation"]
         xp_per_min = playerData["xp_per_min"]
-        win = playerData["win"]
-        # some records do not have these data keys in the record so we have to handle that
-        try:
-            buyback_count = playerData["buyback_count"]
-        except KeyError:
-            buyback_count = 0
-        try:
-            lane_efficiency_pct = playerData["lane_efficiency_pct"]
-        except KeyError:
-            lane_efficiency_pct = 0
         rank_tier = playerData["rank_tier"]
         # add the values that we have gotten to the list of values initialised earlier
-        attr_values.extend((kda, gold_efficiency, camps_stacked, last_hits, denies, hero_damage, hero_healing, obs_placed,
-              sen_placed, stuns, tower_damage, rune_pickups, teamfight_participation, xp_per_min, win, buyback_count,
-                           lane_efficiency_pct, rank_tier))
+        attr_values.extend((kda, gold_efficiency, camps_stacked, last_hits, hero_damage, hero_healing, obs_placed,
+              sen_placed, stuns, tower_damage, rune_pickups, teamfight_participation, xp_per_min, rank_tier))
         
         # to eliminate the existence of null values, we replace them with a zero
         for index, data in enumerate(attr_values):
