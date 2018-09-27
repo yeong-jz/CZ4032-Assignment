@@ -24,13 +24,14 @@
 ## eg archon 4 would be 44 in the rank tier
 
 import json
+
 # initialise a list of keys which comes from the attributes that we decided on previously
 attr_keys = ["kda", "gold_efficiency", "camps_stacked", "last_hits", "hero_damage", "hero_healing",
             "obs_placed", "sen_placed", "stuns", "tower_damage", "rune_pickups",
-             "teamfight_participation", "xp_per_min", "win", "rank_tier"]
+             "teamfight_participation", "xp_per_min", "rank_tier"]
 
 # open the files 
-with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "w") as newfile:
+with open("labelPlayerData.json", "r") as file, open("finalPlayerData.json", "a") as newfile:
     count = 0
     for i in file:
         playerData = json.loads(i)

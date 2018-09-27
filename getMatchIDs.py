@@ -8,6 +8,7 @@ import uniqueMatchIDs as umd
 # open match id csv file in write mode
 with open('match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
+    count = 0
     while(True):
         for i in range(0,100):
             # call opendota's public match api(gives 100 randomly sampled match ids)
@@ -21,10 +22,13 @@ with open('match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
                     continue
             print("Record", i, "added.")
             time.sleep(1.1)
+        count+=1
+        print(count, "times run.")
+        umd.uniqueMatchIDs()
         time.sleep(900)
     
 
-umd.uniqueMatchIDs()
+
 
 
         

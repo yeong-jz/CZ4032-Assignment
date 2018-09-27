@@ -4,7 +4,7 @@ import csv
 import time
 
 def getPlayerData():
-    with open('unique_match_id.csv', 'r') as csvfile, open('playerData.json', 'w') as file:
+    with open('unique_match_id2.csv', 'r') as csvfile, open('playerData.json', 'w') as file:
         reader = csv.reader(csvfile, delimiter=',')
         matchCount = 1
         errorCount = 0
