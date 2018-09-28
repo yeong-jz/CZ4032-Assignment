@@ -10,6 +10,9 @@ with open("finalPlayerData.json", "r") as file, open("finalPlayerData.csv", "w",
         try:
             i = i.rstrip()
             data = json.loads(i)
+            for i in data.keys():
+                if i == "rank_tier":
+                    data[i] = data[i]//10
             if count < 1:
                 writer.writerow(data.keys())
                 writer.writerow(data.values())
