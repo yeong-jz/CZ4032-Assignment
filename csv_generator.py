@@ -2,7 +2,7 @@
 import json
 import csv
 
-with open("finalPlayerData.json", "r") as file, open("finalPlayerData.csv", "w",  newline='') as newfile:
+with open("Data/finalPlayerData.json", "r") as file, open("finalPlayerData.csv", "w",  newline='') as newfile:
     count = 0
     errorCount = 0
     writer = csv.writer(newfile)

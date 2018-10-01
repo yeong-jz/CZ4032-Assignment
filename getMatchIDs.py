@@ -6,7 +6,7 @@ import time
 import uniqueMatchIDs as umd
 
 # open match id csv file in write mode
-with open('match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
+with open('Data/match_id.csv', 'w', encoding='utf-8', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=',')
     count = 0
     while(True):

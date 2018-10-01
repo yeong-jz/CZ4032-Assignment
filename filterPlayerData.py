@@ -3,7 +3,7 @@ import re
 
 # purpose is to filter labelled and unlabelled player data
 def filterLabelledData():
-    with open('playerData.json', 'r') as file, open('labelPlayerData.json', 'w') as newfile:
+    with open('Data/playerData.json', 'r') as file, open('Data/labelPlayerData.json', 'w') as newfile:
         count = 0
         errorCount = 0
         buyback_count = 0

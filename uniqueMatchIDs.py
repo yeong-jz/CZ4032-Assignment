@@ -2,7 +2,7 @@ import csv
 
 def uniqueMatchIDs():
     # purpose is to check the match_id csv for unique match ids
-    with open("match_id.csv", "r") as file:
+    with open("Data/match_id.csv", "r") as file:
         reader = csv.reader(file, delimiter=',')
         uniqueIDs = []
         count = 0
@@ -18,7 +18,7 @@ def uniqueMatchIDs():
 
     # we want to make sure that the new match ids pulled from the api dont overlap
     # with what we already have
-    with open("unique_match_id.csv", "r", newline='') as newfile:
+    with open("Data/unique_match_id.csv", "r", newline='') as newfile:
         reader2 = csv.reader(newfile, delimiter=',')
         uniqueIDs2 = []
         count2 = 0
@@ -31,7 +31,7 @@ def uniqueMatchIDs():
         
 
     # after checking then we write to file
-    with open("unique_match_id.csv", "a", newline='') as newfile:
+    with open("Data/unique_match_id.csv", "a", newline='') as newfile:
         writer = csv.writer(newfile, delimiter=',')
         count3 = 0
         for i in uniqueIDs:
@@ -41,14 +41,14 @@ def uniqueMatchIDs():
     print("New total :",count3+count2)
 
     # after checking then we write to file
-    with open("unique_match_id2.csv", "a", newline='') as newfile:
+    with open("Data/unique_match_id2.csv", "a", newline='') as newfile:
         writer = csv.writer(newfile, delimiter=',')
         for i in uniqueIDs:
             if i not in uniqueIDs2:
                 writer.writerow(i)
 
     # count new file
-    with open("unique_match_id2.csv", "r", newline='') as newfile:
+    with open("Data/unique_match_id2.csv", "r", newline='') as newfile:
         reader2 = csv.reader(newfile, delimiter=',')
         uniqueIDs2 = []
         count4 = 0
