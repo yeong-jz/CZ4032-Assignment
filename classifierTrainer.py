@@ -14,8 +14,7 @@ from sklearn import preprocessing
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
 
 data = pd.read_csv("Data/finalPlayerData.csv")
-
-X_train, X_test = train_test_split(data, test_size=0.5, random_state=int(time.time()))
+X_train, X_test = train_test_split(data, test_size=0.2, random_state=int(time.time()))
 
 gnb = GaussianNB()
 
@@ -23,7 +22,8 @@ used_features =[]
 
 # fill the features list with the values
 for i in data.head(1):
-    used_features.append(i)
+    if i != "rank_tier":
+     used_features.append(i)
 
 gnb.fit(
     X_train[used_features].values,
@@ -40,7 +40,7 @@ pickle.dump(gnb, open("medalClassifier.sav", 'wb'))
 # print sample predictions
 for i in range(0,10):
     sample = data.sample(n=1)
-    sample_pred = gnb.predict(sample)
+    sample_pred = gnb.predict(sample.drop("rank_tier", axis=1))
     print("Sample Prediction", i+1)
     print("Predicted medal bracket:", medals[int(sample_pred[0])])
     print("Actual medal bracket:", medals[int(sample["rank_tier"].values[0])])

@@ -63,7 +63,7 @@ try:
                     for key,value in playerAttributes.items():
                         print(key,":", value)
                     playerDataFrame = pd.DataFrame.from_records([playerAttributes])
-                    estimatedBracket = mc.predict(playerDataFrame)
+                    estimatedBracket = mc.predict(playerDataFrame.drop("rank_tier", axis=1))
                     print("Estimated medal bracket:", medals[int(estimatedBracket)])
                     break
             except KeyError:
