@@ -4,17 +4,18 @@
 import numpy as np
 import pandas as pd
 import time
+import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.externals import joblib
-
+from sklearn import preprocessing
 
 # initialise medals list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
 
 data = pd.read_csv("Data/finalPlayerData.csv")
 
-X_train, X_test = train_test_split(data, test_size=0.2, random_state=int(time.time()))
+X_train, X_test = train_test_split(data, test_size=0.5, random_state=int(time.time()))
 
 gnb = GaussianNB()
 
@@ -34,11 +35,11 @@ gaussian_pred = gnb.predict(X_test[used_features])
 # save model for use next time
 print("Saving trained model as medalClassifier.joblib.")
 joblib.dump(gnb, 'medalClassifier.joblib')
+pickle.dump(gnb, open("medalClassifier.sav", 'wb'))
 
 # print sample predictions
 for i in range(0,10):
     sample = data.sample(n=1)
-    print(sample)
     sample_pred = gnb.predict(sample)
     print("Sample Prediction", i+1)
     print("Predicted medal bracket:", medals[int(sample_pred[0])])

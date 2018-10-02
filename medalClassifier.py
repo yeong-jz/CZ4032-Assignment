@@ -2,9 +2,12 @@
 
 from sklearn.externals import joblib
 from sklearn.naive_bayes import GaussianNB
+import pickle
 import requests
 import json
 import pandas as pd
+from collections import OrderedDict
+
 
 # initialise medal list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
@@ -12,7 +15,8 @@ medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient
 # get the classifier
 try:
     print("Loading classifier...")
-    mc = joblib.load('medalClassifier.joblib')
+    mc = pickle.load(open("medalClassifier.sav", "rb"))
+##    mc = joblib.load('medalClassifier.joblib')
     print("Classifier loaded.")
     matchID = input("Enter your match id :")
     userID = input("Enter your user id :")
@@ -29,7 +33,7 @@ try:
         playerAttributeValues = []
         for i in players:
             try:
-                if userID == i["personaname"]:
+                if userID.lower() == i["personaname"].lower():
                     print("User found. Extracting data...")
                     kda = (i["kills"] + i["assists"])/(i["deaths"] + 1)
                     gold_efficiency = i["total_gold"]/i["gold_per_min"]
@@ -54,7 +58,7 @@ try:
                             # standardising all values to a 2dp format
                             playerAttributeValues[index] = float("{0:.2f}".format(data))
                     found = True
-                    playerAttributes = dict(zip(playerAttributesKeys, playerAttributeValues))
+                    playerAttributes = OrderedDict(zip(playerAttributesKeys, playerAttributeValues))
                     print("Your stats are :")
                     for key,value in playerAttributes.items():
                         print(key,":", value)
@@ -65,8 +69,7 @@ try:
             except KeyError:
                 print("Player name not found. Trying again...")
         if found == False:
-            print("Username was not found. Please expose public match data in your Dota client.")
-            
+            print("Username was not found. Please expose public match data in your Dota client.")  
     except json.decoder.JSONDecodeError:
         print("JSON decode error.")
     
