@@ -11,6 +11,7 @@ from collections import OrderedDict
 
 # initialise medal list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
+heroInfo = json.load(open("Data/heroInfo.json", "r"))
 
 # get the classifier
 try:
@@ -33,8 +34,13 @@ try:
         playerAttributeValues = []
         for i in players:
             try:
-                if userID.lower() == i["personaname"].lower():
+                if userID.lower() in i["personaname"].lower():
                     print("User found. Extracting data...")
+                    hero_id = i["hero_id"]
+                    try:
+                        lane_role = i["lane_role"]
+                    except KeyError:
+                        lane_role = "Not found."
                     kda = (i["kills"] + i["assists"])/(i["deaths"] + 1)
                     gold_efficiency = i["total_gold"]/i["gold_per_min"]
                     camps_stacked = i["camps_stacked"]
@@ -62,6 +68,10 @@ try:
                     print("Your stats are :")
                     for key,value in playerAttributes.items():
                         print(key,":", value)
+                    for i in heroInfo:
+                        if i["id"] == hero_id:
+                            print("Hero played :", i["localized_name"])
+                    print("Lane role :", lane_role)
                     playerDataFrame = pd.DataFrame.from_records([playerAttributes])
                     estimatedBracket = mc.predict(playerDataFrame.drop("rank_tier", axis=1))
                     print("Estimated medal bracket:", medals[int(estimatedBracket)])
