@@ -27,39 +27,34 @@ import json
 from collections import OrderedDict
 
 # initialise a list of keys which comes from the attributes that we decided on previously
-attr_keys = ["kills", "assists", "deaths", "total_gold", "gold_per_min", "last_hits_per_min", "hero_heal_damage", "wards_placed",
-             "tower_damage", "xp_per_min", "rank_tier"]
+attr_keys = ["kda", "gold_efficiency", "last_hits_per_min", "hero_heal_damage", "wards_placed",
+             "tower_damage", "rune_pickups", "teamfight_participation", "xp_per_min", "rank_tier"]
 
 # open the files 
-with open("Data/labelPlayerData2.json", "r") as file, open("Data/finalPlayerData.json", "a") as newfile:
+with open("Data/labelPlayerData.json", "r") as file, open("Data/finalPlayerData.json", "w") as newfile:
     count = 0
     for i in file:
         playerData = json.loads(i)
         # initialise a list of values to be paired with the keys we have initialised earlier
         attr_values = []
         # get the values from each player's data 
-        kills = playerData["kills"]
-        assists = playerData["assists"]
-        deaths = playerData["deaths"]
-        total_gold = playerData["total_gold"]
-        gold_per_min = playerData["gold_per_min"]
+        kda = (playerData["kills"] + playerData["assists"])/(playerData["deaths"] + 1)
+        gold_efficiency = playerData["total_gold"]/playerData["gold_per_min"]
         last_hits_per_min = playerData["last_hits"]/playerData["duration"]
         hero_heal_damage = playerData["hero_damage"] + playerData["hero_healing"]
         if playerData["obs_placed"] is None:
-            obs_placed = 0
-        else:
-            obs_placed = playerData["obs_placed"]
+            playerData["obs_placed"] = 0
         if playerData["sen_placed"] is None:
-            sen_placed = 0
-        else:
-            sen_placed = playerData["sen_placed"]
-        wards_placed = obs_placed + sen_placed
+            playerData["sen_placed"] = 0
+        wards_placed = playerData["obs_placed"] + playerData["sen_placed"]
         tower_damage = playerData["tower_damage"]
+        rune_pickups = playerData["rune_pickups"]
+        teamfight_participation = playerData["teamfight_participation"]
         xp_per_min = playerData["xp_per_min"]
         rank_tier = playerData["rank_tier"]
         # add the values that we have gotten to the list of values initialised earlier
-        attr_values.extend((kills, assists, deaths, total_gold, gold_per_min, last_hits_per_min, hero_heal_damage, wards_placed,
-             tower_damage, xp_per_min, rank_tier))
+        attr_values.extend((kda, gold_efficiency, last_hits_per_min, hero_heal_damage,
+                            wards_placed, tower_damage, rune_pickups, teamfight_participation, xp_per_min, rank_tier))
         
         # to eliminate the existence of null values, we replace them with a zero
         for index, data in enumerate(attr_values):
