@@ -9,6 +9,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 from sklearn.externals import joblib
 from sklearn import preprocessing
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # initialise medals list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
@@ -57,3 +60,7 @@ print("Number of mislabeled points out of a total {} points : {}, performance {:
           100*(1-(X_test["rank_tier"] != gaussian_pred).sum()/X_test.shape[0])
 ))
 print("Average Euclidean distance :", abs(X_test["rank_tier"] - gaussian_pred).sum()/X_test.shape[0])
+
+sns.heatmap(confusion_matrix(X_test["rank_tier"], gaussian_pred), xticklabels=medals[1:], yticklabels=medals[1:], annot=True, fmt="d")
+plt.tight_layout()
+plt.show()

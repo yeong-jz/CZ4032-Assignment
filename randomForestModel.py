@@ -9,6 +9,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
 from sklearn import preprocessing
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # initialise medals list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
@@ -16,7 +19,7 @@ medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient
 data = pd.read_csv("Data/finalPlayerData.csv")
 X_train, X_test = train_test_split(data, test_size=0.2, random_state=int(time.time()))
 
-rfc = RandomForestClassifier(n_estimators = 2000, n_jobs=2, random_state=0) 
+rfc = RandomForestClassifier(n_estimators = 10, n_jobs=2, random_state=0) 
 
 used_features =[]
 
@@ -30,7 +33,7 @@ rfc.fit(
     X_train["rank_tier"]
 )
 
-gaussian_pred = rfc.predict(X_test[used_features])
+randomForest_pred = rfc.predict(X_test[used_features])
 
 # save model for use next time
 print("Saving trained model as randomForestClassifier.joblib.")
@@ -53,7 +56,12 @@ print("Random Forest")
 print("Number of mislabeled points out of a total {} points : {}, performance {:05.2f}%"
       .format(
           X_test.shape[0],
-          (X_test["rank_tier"] != gaussian_pred).sum(),
-          100*(1-(X_test["rank_tier"] != gaussian_pred).sum()/X_test.shape[0])
+          (X_test["rank_tier"] != randomForest_pred).sum(),
+          100*(1-(X_test["rank_tier"] != randomForest_pred).sum()/X_test.shape[0])
 ))
-print("Average Euclidean distance :", abs(X_test["rank_tier"] - gaussian_pred).sum()/X_test.shape[0])
+print("Average Euclidean distance :", abs(X_test["rank_tier"] - randomForest_pred).sum()/X_test.shape[0])
+
+
+sns.heatmap(confusion_matrix(X_test["rank_tier"], randomForest_pred),xticklabels=medals[1:], yticklabels=medals[1:], annot=True, fmt="d")
+plt.tight_layout()
+plt.show()
