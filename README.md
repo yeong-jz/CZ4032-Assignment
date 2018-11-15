@@ -1,7 +1,22 @@
 # CZ4032-Assignment
-Assignment for CZ4032
+An assignment for CZ4032 - Data Analytics and Mining by Group 25
 ## Getting started
 1. Have Python 3.6 installed
+### Libraries and installation:
+
+Install dependencies individually by:
+```
+pip install sklearn
+pip install pandas
+pip install matplotlib
+pip install seaborn
+pip install numpy
+pip install requests
+```
+or
+```
+pip install -r requirements.txt
+```
 
 ## Instructions
 1. Run getMatchIDs.py to generate a list of match ids.
