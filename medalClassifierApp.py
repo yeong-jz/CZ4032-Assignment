@@ -1,3 +1,4 @@
+# A simple app that utilises the model trained to classify a player's game data
 # enter user data to be predicted by classifier
 
 from sklearn.externals import joblib
@@ -16,8 +17,7 @@ heroInfo = json.load(open("Data/heroInfo.json", "r"))
 # get the classifier
 try:
     print("Loading classifier...")
-    mc = pickle.load(open("medalClassifier.sav", "rb"))
-##    mc = joblib.load('medalClassifier.joblib')
+    mc = joblib.load(open("randomForestClassifier.joblib", "rb"))
     print("Classifier loaded.")
     matchID = input("Enter your match id :")
     userID = input("Enter your user id :")
@@ -28,9 +28,8 @@ try:
         # find player info
         players = requestMatchData["players"]
         found = False
-        playerAttributesKeys = ["kda", "gold_efficiency", "camps_stacked", "last_hits", "hero_damage", "hero_healing",
-            "obs_placed", "sen_placed", "stuns", "tower_damage", "rune_pickups",
-             "teamfight_participation", "xp_per_min", "rank_tier"]
+        playerAttributesKeys = ["kills", "assists", "deaths", "total_gold", "gold_per_min", "last_hits_per_min", "hero_heal_damage", "wards_placed",
+             "tower_damage", "xp_per_min", "rank_tier"]
         playerAttributeValues = []
         for i in players:
             try:
@@ -41,22 +40,27 @@ try:
                         lane_role = i["lane_role"]
                     except KeyError:
                         lane_role = "Not found."
-                    kda = (i["kills"] + i["assists"])/(i["deaths"] + 1)
-                    gold_efficiency = i["total_gold"]/i["gold_per_min"]
-                    camps_stacked = i["camps_stacked"]
-                    last_hits = i["last_hits"]
+                    kills = i["kills"]
+                    assists = i["assists"]
+                    deaths = i["deaths"]
+                    total_gold = i["total_gold"]
+                    gold_per_min = i["gold_per_min"]
+                    last_hits_per_min = i["last_hits"]/i["duration"]
                     hero_damage = i["hero_damage"]
                     hero_healing = i["hero_healing"]
+                    hero_heal_damage = hero_damage + hero_healing
                     obs_placed = i["obs_placed"]
                     sen_placed = i["sen_placed"]
-                    stuns = i["stuns"]
+                    if obs_placed is None:
+                        obs_placed = 0
+                    if sen_placed is None:
+                        sen_placed = 0
+                    wards_placed = obs_placed + sen_placed
                     tower_damage = i["tower_damage"]
-                    rune_pickups = i["rune_pickups"]
-                    teamfight_participation = i["teamfight_participation"]
                     xp_per_min = i["xp_per_min"]
                     rank_tier = i["rank_tier"]
-                    playerAttributeValues.extend((kda, gold_efficiency, camps_stacked, last_hits, hero_damage, hero_healing, obs_placed,
-                          sen_placed, stuns, tower_damage, rune_pickups, teamfight_participation, xp_per_min, rank_tier))
+                    playerAttributeValues.extend((kills, assists, deaths, total_gold, gold_per_min, last_hits_per_min, hero_heal_damage, wards_placed,
+             tower_damage, xp_per_min, rank_tier))
                     for index, data in enumerate(playerAttributeValues):
                         if data is None:
                             playerAttributeValues[index] = 0
@@ -66,21 +70,29 @@ try:
                     found = True
                     playerAttributes = OrderedDict(zip(playerAttributesKeys, playerAttributeValues))
                     print("Your stats are :")
-                    for key,value in playerAttributes.items():
-                        if key == "rank_tier":
-                            if value != 0:
-                                print("Rank :", medals[int(value//10)], int(value%10))
-                            else:
-                                print("Rank : Unknown")
-                        else:
-                            print(key,":", value)
+                    print("Kills :", kills)
+                    print("Assists :", assists)
+                    print("Deaths :", deaths)
+                    print("Total gold :", total_gold)
+                    print("Gold per minute :", gold_per_min)
+                    print("Last hits per minute : {0:.3f}".format(last_hits_per_min))
+                    print("Hero damage :", hero_damage)
+                    print("Hero healing :", hero_healing)
+                    print("Observers placed :", obs_placed)
+                    print("Sentries placed :", sen_placed)
+                    print("Tower damage :", tower_damage)
+                    print("Exp per minute :", xp_per_min)
+                    if rank_tier != 0:
+                        print("Rank :", medals[int(rank_tier//10)], int(rank_tier%10))
+                    else:
+                        print("Rank : Unknown")
                     for i in heroInfo:
                         if i["id"] == hero_id:
                             print("Hero played :", i["localized_name"])
                     print("Lane role :", lane_role)
                     playerDataFrame = pd.DataFrame.from_records([playerAttributes])
                     estimatedBracket = mc.predict(playerDataFrame.drop("rank_tier", axis=1))
-                    print("Estimated medal bracket:", medals[int(estimatedBracket)])
+                    print("Estimated performance in game:", medals[int(estimatedBracket)])
                     break
             except KeyError:
                 print("Player name not found. Trying again...")

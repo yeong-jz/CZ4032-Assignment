@@ -2,6 +2,7 @@ import json
 import re
 
 # purpose is to filter labelled and unlabelled player data
+# secondary purpose is to count sparsity of certain attributes
 def filterLabelledData():
     with open('Data/playerData.json', 'r') as file, open('Data/labelPlayerData.json', 'w') as newfile:
         count = 0
@@ -57,14 +58,3 @@ def filterLabelledData():
 
 
 filterLabelledData()
-##with open('finalPlayerData.json', 'r') as file, open('labelPlayerData.json', 'a') as newfile:
-##    for i in file:
-##        try:
-##            playerData = json.loads(i)
-##            if playerData["rank_tier"] is not None:
-##                json.dump(playerData, newfile)
-##                newfile.write('\n')
-##                count+=1
-##                print(count, "records added.") 
-##        except (json.decoder.JSONDecodeError,KeyError):
-##            errorCount+=1

@@ -1,7 +1,6 @@
 # perform machine learning on dataset
 # purpose is to identify which skill bracket a player is from based on their stats
 
-import numpy as np
 import pandas as pd
 import time
 import pickle
@@ -16,10 +15,11 @@ import matplotlib.pyplot as plt
 # initialise medals list
 medals = ["Null", "Herald", "Guardian", "Crusader", "Archon", "Legend", "Ancient", "Divine", "Immortal"]
 
+# read data into a dataframe
 data = pd.read_csv("Data/finalPlayerData.csv")
 X_train, X_test = train_test_split(data, test_size=0.2, random_state=int(time.time()))
 
-rfc = RandomForestClassifier(n_estimators = 10, n_jobs=2, random_state=0) 
+rfc = RandomForestClassifier(n_estimators = 500, n_jobs=2, random_state=0) 
 
 used_features =[]
 
@@ -28,6 +28,7 @@ for i in data.head(1):
     if i != "rank_tier":
      used_features.append(i)
 
+# train the model
 rfc.fit(
     X_train[used_features].values,
     X_train["rank_tier"]
@@ -50,6 +51,8 @@ for i in range(0,10):
     print("Euclidean distance:", abs(int(sample["rank_tier"].values[0])-int(sample_pred[0])))
     print("\n")
 
+# print the results
+print("Using {} features.".format(len(used_features)))
 print("Number of training points used :", len(X_train))
 print("Number of test points used :", len(X_test))
 print("Random Forest")
@@ -60,8 +63,12 @@ print("Number of mislabeled points out of a total {} points : {}, performance {:
           100*(1-(X_test["rank_tier"] != randomForest_pred).sum()/X_test.shape[0])
 ))
 print("Average Euclidean distance :", abs(X_test["rank_tier"] - randomForest_pred).sum()/X_test.shape[0])
+print("Overall score :", (100*(1-(X_test["rank_tier"] != randomForest_pred).sum()/X_test.shape[0])*(1/(abs(X_test["rank_tier"] - randomForest_pred).sum()/X_test.shape[0]))))
 
-
+# generate a heatmap of the results
 sns.heatmap(confusion_matrix(X_test["rank_tier"], randomForest_pred),xticklabels=medals[1:], yticklabels=medals[1:], annot=True, fmt="d")
+plt.xlabel("Actual")
+plt.ylabel("Predicted")
+plt.title("Random Forest")
 plt.tight_layout()
 plt.show()

@@ -1,4 +1,4 @@
-# get dota heroes information
+# get useful dota heroes information for future improvement
 
 import json
 import requests

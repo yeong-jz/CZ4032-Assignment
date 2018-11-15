@@ -27,11 +27,11 @@ import json
 from collections import OrderedDict
 
 # initialise a list of keys which comes from the attributes that we decided on previously
-attr_keys = ["kills", "assists", "deaths", "total_gold", "gold_per_min", "last_hits_per_min", "hero_heal_damage", "wards_placed",
+attr_keys = ["kills", "assists", "deaths", "total_gold", "gold_per_min", "last_hits_per_min","hero_heal_damage", "wards_placed",
              "tower_damage", "xp_per_min", "rank_tier"]
 
 # open the files 
-with open("Data/labelPlayerData2.json", "r") as file, open("Data/finalPlayerData.json", "a") as newfile:
+with open("Data/labelPlayerData.json", "r") as file, open("Data/finalPlayerData.json", "w") as newfile:
     count = 0
     for i in file:
         playerData = json.loads(i)
